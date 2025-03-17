@@ -1,4 +1,8 @@
 import { Express, Request, Response } from "express";
+import validate from "./middleware/validateResource.js";
+import {registerUserSchema, loginUserSchema, otpVerificationSchema, resendOtpSchema} from "@repo/validations/userSchema";
+import { loginHandler, logOutHandler, otpVerificationHandler, registerHandler, resendOtpHandler } from "./controllers/users.controller.js";
+import { authenticateAccessToken } from "./middleware/authMiddleware.js";
 
 function routes(app : Express){
     app.get('/healthcheck', (req : Request, res : Response)  => res.sendStatus(200));
@@ -8,7 +12,27 @@ function routes(app : Express){
         next();
     });
 
+    app.post('/register', validate(registerUserSchema), registerHandler);
+    app.post('/otpVerification', validate(otpVerificationSchema), otpVerificationHandler)
+    app.post('/login', validate(loginUserSchema), loginHandler);
+    app.post('/logout', logOutHandler);
+    app.post('/resendOtp', validate(resendOtpSchema) , resendOtpHandler);
+    app.get('/profile', authenticateAccessToken, (req, res) => {
+        res.json({ message: 'User profile'});
+    });
+
+    // app.get('/paymentAPI', authenticateAccessToken, (req, res) => {
+    //     res.json({ message: 'User profile'});
+
+    //     // 
+    // });
+
     
+    // app.get('/addTOCart', (req, res) => {
+    //     res.json({ message: 'User profile'});
+
+        // 
+    // });
     
 
 

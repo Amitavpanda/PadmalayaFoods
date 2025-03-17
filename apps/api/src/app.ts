@@ -5,8 +5,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { info } from "@repo/logs/logs";
 import routes from "./routes.js";
+import cookieParser from 'cookie-parser';
 
 const app = express();
+app.use(cookieParser());
 
 console.log("cors enabled")
 

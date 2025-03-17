@@ -1,5 +1,5 @@
 {
-  "name": "db",
+  "name": "@repo/db",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,15 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "prisma": "^6.5.0"
+    "prisma": "^6.5.0",
+    "supabase": "^1.178.2"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0"
-  }
+  },
+  "exports": {
+    "./client": "./index.ts"
+  },
+  "type": "module"
+
 }
