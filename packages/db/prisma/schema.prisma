@@ -14,8 +14,50 @@ datasource db {
 }
 
 model User {
-  id String @id @unique @default(uuid())
-  phoneNumber String @unique
-  name String? 
-  address String?
+  id          String  @id @unique @default(uuid())
+  phoneNumber String  @unique
+  name        String?
+  address     String?
+  orders      Order[] @relation("UserOrders")
+}
+
+model Category {
+  id            String    @id @unique @default(uuid())
+  categoryName  String
+  categoryImage String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  products      Product[]
+}
+
+model Product {
+  id          String   @id @unique @default(uuid())
+  productName String
+  categoryId  String
+  pricing     Json // Store pricing as JSON (e.g., {"distributor": 323, "dealer": 432})
+  image       String?
+  stockStatus Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id])
+  orders   Order[]  @relation("ProductOrders")
+}
+
+model Order {
+  id             String    @id @unique @default(uuid())
+  customerId     String // Assuming this is a User ID referencing the User model
+  productId      String // Product being ordered
+  orderDate      DateTime  @default(now())
+  quantity       Int?
+  pricing        Float?
+  amount         Float?
+  deliveryStatus String    @default("Pending")
+  deliveryDate   DateTime?
+  paymentStatus  String    @default("Pending")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  customer User    @relation("UserOrders", fields: [customerId], references: [id])
+  product  Product @relation("ProductOrders", fields: [productId], references: [id])
 }
