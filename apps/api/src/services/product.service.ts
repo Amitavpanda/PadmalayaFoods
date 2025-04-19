@@ -25,6 +25,26 @@ export async function addProductService(input: AddProductSchema) {
     
 }
 
+export async function getProductsByCategoryService(categoryId: string) {
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                categoryId: categoryId, 
+            },
+            select: {
+                id: true,
+                productName: true,
+                image: true,
+                pricing: true, 
+            },
+        });
+        return products;
+    } catch (e: any) {
+        error("Error in getProductsByCategoryService", e);
+        throw e; 
+    }
+}
+
 export async function editProductService(input: EditProductSchema) {
     const { productId } = input.params;
     const { productName, categoryId, pricing, image, stockStatus } = input.body;

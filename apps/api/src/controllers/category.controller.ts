@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { addCategoryService, deleteCategoryService, editCategoryService } from '../services/category.service.js';
+import { addCategoryService, deleteCategoryService, editCategoryService, getCategoriesService } from '../services/category.service.js';
 
 // Add a new category
 export const addCategoryHandler = async (req: Request, res: Response)=> {
@@ -34,4 +34,14 @@ export const editCategoryHandler = async (req: Request, res: Response) => {
         body: { categoryName, categoryImage },
     });
     return res.status(200).send(response);
+};
+
+export const getCategoriesHandler = async (req: Request, res: Response) => {
+    try {
+        const categories = await getCategoriesService();
+        return res.status(200).json(categories);
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        return res.status(500).send({ error: 'Error fetching categories' });
+    }
 };

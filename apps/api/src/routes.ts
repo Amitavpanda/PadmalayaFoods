@@ -5,10 +5,14 @@ import { loginHandler, logOutHandler, otpVerificationHandler, registerHandler, r
 import { authenticateAccessToken } from "./middleware/authMiddleware.js";
 import { addCategorySchema, editCategorySchema, deleteCategorySchema } from "@repo/validations/categorySchema";
 import { addProductSchema, editProductSchema, deleteProductSchema } from "@repo/validations/productSchema";
-import { addCategoryHandler, deleteCategoryHandler, editCategoryHandler } from "./controllers/category.controller.js";
-import { addProductHandler, deleteProductHandler, editProductHandler } from "./controllers/product.controller.js";
+import { addCategoryHandler, deleteCategoryHandler, editCategoryHandler, getCategoriesHandler } from "./controllers/category.controller.js";
+import { addProductHandler, deleteProductHandler, editProductHandler, getProductByCategoryHandler } from "./controllers/product.controller.js";
 import { addOrderSchema, editOrderSchema, deleteOrderSchema } from "@repo/validations/orderSchema";
 import {addOrderHandler, editOrderHandler, getOrdersHandler, deleteOrderHandler} from "./controllers/order.controller.js";
+import { add, get } from "lodash";
+import {addToCartSchema, clearCartSchema, deleteCartItemSchema, getCartItemsSchema} from "@repo/validations/cartSchema";
+import { addToCartHandler, clearCartHandler, deleteCartItemHandler, getCartItemsHandler } from "./controllers/cart.controller.js";
+import { clear } from "console";
 
 function routes(app: Express) {
     app.get('/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
@@ -45,7 +49,19 @@ function routes(app: Express) {
 
     app.delete('/deleteOrder/:orderId', authenticateAccessToken, validate(deleteOrderSchema), deleteOrderHandler);
 
+
     app.get('/getOrders', authenticateAccessToken, getOrdersHandler);
+    
+    
+    app.get('/getCategories', authenticateAccessToken, getCategoriesHandler);
+
+    app.get('/getProductsByCategoryId/:categoryId', authenticateAccessToken, getProductByCategoryHandler);
+    app.post('/addTocart', validate(addToCartSchema),  authenticateAccessToken, addToCartHandler);
+    app.get('/getCartItems/:customerId', validate(getCartItemsSchema),  authenticateAccessToken, getCartItemsHandler);
+    app.delete('/deleteCartItems/:customerId', validate(clearCartSchema), authenticateAccessToken, clearCartHandler);
+    app.delete('/deleteCartItem/:cartItemId', validate(deleteCartItemSchema), authenticateAccessToken, deleteCartItemHandler);
+    
+    
     //     res.json({ message: 'User profile'});
 
     //     // 

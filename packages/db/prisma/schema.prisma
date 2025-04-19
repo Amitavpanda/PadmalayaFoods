@@ -19,6 +19,7 @@ model User {
   name        String?
   address     String?
   orders      Order[] @relation("UserOrders")
+  carts       Cart[]  @relation("UserCarts")
 }
 
 model Category {
@@ -28,6 +29,8 @@ model Category {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   products      Product[]
+
+
 }
 
 model Product {
@@ -42,6 +45,7 @@ model Product {
 
   category Category @relation(fields: [categoryId], references: [id])
   orders   Order[]  @relation("ProductOrders")
+  carts    Cart[]   @relation("ProductCarts")
 }
 
 model Order {
@@ -60,4 +64,20 @@ model Order {
 
   customer User    @relation("UserOrders", fields: [customerId], references: [id])
   product  Product @relation("ProductOrders", fields: [productId], references: [id])
+}
+
+model Cart {
+  id          String   @id @default(uuid()) @unique
+  customerId  String   // Reference to the User model
+  productId   String   // Reference to the Product model
+  quantity    Int      @default(1) // The quantity of the product
+  productImage String 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  product     Product  @relation("ProductCarts", fields: [productId], references: [id])
+  customer    User     @relation("UserCarts", fields: [customerId], references: [id])
+  
+  @@unique([customerId, productId])
+
+
 }

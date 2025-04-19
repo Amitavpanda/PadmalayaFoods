@@ -58,3 +58,22 @@ export async function deleteCategoryService(input: DeleteCategorySchema) {
         return e;
     }
 }
+
+
+
+
+export async function getCategoriesService() {
+    try {
+        const categories = await prisma.category.findMany({
+            select: {
+                id: true,
+                categoryName: true,
+                categoryImage: true,
+            },
+        });
+        return categories;
+    } catch (e: any) {
+        error("Error in getCategoriesService", e);
+        throw e; 
+    }
+}
