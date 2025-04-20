@@ -13,7 +13,8 @@
     "./userSchema" : "./users.schema.ts",
     "./categorySchema" : "./category.schema.ts",
     "./productSchema" : "./product.schema.ts",
-    "./orderSchema" : "./orders.schema.ts"
+    "./orderSchema" : "./orders.schema.ts",
+    "./cartSchema" : "./cart.schema.ts"
   },
     "type": "module"
 }
