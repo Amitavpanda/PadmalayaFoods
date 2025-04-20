@@ -1,102 +1,136 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
+"use client";
 
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
 
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
-
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
+import BottomNav from "@/components/BottomNav";
+import {CategoriesSection} from "@/components/CategoriesSection";
+import Header from "@/components/Header";
+import { SearchBar } from "@/components/SearchBar";
+import {TopDealsSection} from "@/components/TopDealsSection";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [searchQuery, setSearchQuery] = useState('');
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turbo.build/repo/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    console.log('Searching for:', query);
+    // In a real app, this would trigger a search API call
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen pb-16 md:pb-0">
+      <Header />
+
+      <main className="flex-1">
+        <div className="container px-4 py-4 mx-auto">
+          {/* Hero section with search */}
+          <div className="relative py-6 mb-4 overflow-hidden rounded-xl bg-gradient-to-r from-biryani-500 to-biryani-600">
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div className="relative z-10 p-4">
+              <h1 className="mb-2 text-2xl font-bold text-white">
+                Premium Rice<br />Delivered to Your Doorstep
+              </h1>
+              <p className="mb-6 text-white/80">
+                Find the perfect rice for your needs
+              </p>
+              <SearchBar 
+                onSearch={handleSearch} 
+                className="mb-2 md:w-96" 
+              />
+            </div>
+          </div>
+
+          {/* Buyer type information banner */}
+          <Card className="mb-6">
+            <CardContent className="p-4">
+              <h2 className="mb-2 text-lg font-semibold">Pricing Information</h2>
+              <p className="mb-3 text-sm text-muted-foreground">
+                We offer special pricing based on your purchase quantity:
+              </p>
+
+              <div className="grid gap-3 md:grid-cols-3">
+                <div className="p-3 border rounded-lg">
+                  <div className="flex items-center mb-2">
+                    <Badge className="bg-blue-500">Distributor</Badge>
+                  </div>
+                  <p className="text-sm">Purchase 5000+ packets to qualify for our lowest wholesale prices.</p>
+                </div>
+
+                <div className="p-3 border rounded-lg">
+                  <div className="flex items-center mb-2">
+                    <Badge className="bg-green-500">Dealer</Badge>
+                  </div>
+                  <p className="text-sm">Purchase 1000+ packets to qualify for special dealer rates.</p>
+                </div>
+
+                <div className="p-3 border rounded-lg">
+                  <div className="flex items-center mb-2">
+                    <Badge className="bg-amber-500">Hotel</Badge>
+                  </div>
+                  <p className="text-sm">Purchase 100+ packets to qualify for bulk hotel prices.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Main content */}
+          <div className="space-y-8">
+            <TopDealsSection />
+            <CategoriesSection />
+
+            {/* About section */}
+            <div className="p-6 border rounded-xl">
+              <h2 className="mb-4 text-xl font-bold">About BiryaniRice Express</h2>
+              <p className="mb-3 text-muted-foreground">
+                We are a premium rice supplier dedicated to providing the highest quality rice for all your needs.
+                Our selection includes specialty rice varieties perfect for biryani, as well as everyday table rice.
+              </p>
+              <p className="text-muted-foreground">
+                With years of experience in the industry, we understand the importance of quality rice for
+                restaurants, hotels, distributors, and individual customers. We source our rice directly from
+                the best farms to ensure exceptional taste and quality with every grain.
+              </p>
+
+              <div className="grid gap-4 mt-6 md:grid-cols-3">
+                <div className="p-4 text-center border rounded-lg">
+                  <div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 rounded-full bg-biryani-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-biryani-600">
+                      <path d="m7 11 2-2-2-2"></path><path d="M11 13h4"></path><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                    </svg>
+                  </div>
+                  <h3 className="mb-1 font-medium">Quality Guaranteed</h3>
+                  <p className="text-sm text-muted-foreground">Premium rice sourced from the finest farms</p>
+                </div>
+
+                <div className="p-4 text-center border rounded-lg">
+                  <div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 rounded-full bg-biryani-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-biryani-600">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                  </div>
+                  <h3 className="mb-1 font-medium">Safe Delivery</h3>
+                  <p className="text-sm text-muted-foreground">Securely packaged and delivered to your doorstep</p>
+                </div>
+
+                <div className="p-4 text-center border rounded-lg">
+                  <div className="flex items-center justify-center w-12 h-12 mx-auto mb-3 rounded-full bg-biryani-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-biryani-600">
+                      <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"></path><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"></path>
+                    </svg>
+                  </div>
+                  <h3 className="mb-1 font-medium">Customer Support</h3>
+                  <p className="text-sm text-muted-foreground">Dedicated team available to assist you</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turbo.build?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turbo.build →
-        </a>
-      </footer>
+
+      <BottomNav />
     </div>
   );
 }
