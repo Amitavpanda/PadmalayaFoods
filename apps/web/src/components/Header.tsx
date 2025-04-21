@@ -1,7 +1,7 @@
 "use client";
 
 
-import { ShoppingCart, User } from 'lucide-react';
+import { ShoppingCart, User, LayoutDashboard } from 'lucide-react';
 import { useRouter } from 'next/navigation'; // Updated import
 import { Button } from '@/components/ui/button';
 import { useCart } from '../../context/CartContext';
@@ -9,8 +9,9 @@ import { useAuth } from '../../context/AuthContext';
 
 function Header() {
   const { itemCount } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const router = useRouter();
+  const isAdmin = isAuthenticated && user?.id === 'user-123';
 
   return (
     <header className="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-sm">
@@ -29,6 +30,16 @@ function Header() {
         
         {/* Right side actions */}
         <div className="flex items-center space-x-4">
+        {isAdmin && (
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={() => router.push('/admin')}
+              title="Admin Dashboard"
+            >
+              <LayoutDashboard className="w-5 h-5" />
+            </Button>
+          )}
           <Button 
             variant="outline" 
             size="icon" 
