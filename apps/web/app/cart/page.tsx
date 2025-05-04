@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCart } from '../../context/CartContext';
 import { CartItem } from '@/components/CartItem';
 import  Header  from '@/components/Header';
 import  BottomNav  from '@/components/BottomNav';
@@ -12,23 +11,13 @@ import {toast} from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { useRouter } from 'next/navigation'; // Updated import
-import { useAuth } from '../../context/AuthContext';
 
 const CartPage = () => {
-  const { items, totalAmount, buyerType, setBuyerType } = useCart();
-  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   
   const handleCheckout = () => {
     setIsProcessing(true);
-    
-    if (!isAuthenticated) {
-        toast.error('Please log in to proceed to checkout.');
-      setIsProcessing(false);
-      router.push('/profile');
-      return;
-    }
     
     // Proceed to checkout
     setTimeout(() => {
@@ -41,7 +30,7 @@ const CartPage = () => {
     style: 'currency', 
     currency: 'INR',
     maximumFractionDigits: 0 
-  }).format(totalAmount);
+  }).format(0); // Updated to 0 as totalAmount is no longer available
   
   // Buyer type requirements info
   const buyerTypeRequirements = {
@@ -68,7 +57,7 @@ const CartPage = () => {
             <h1 className="text-2xl font-bold">Your Cart</h1>
           </div>
           
-          {items.length > 0 ? (
+          {false ? ( // Updated to false as items is no longer available
             <div className="grid gap-6 md:grid-cols-3">
               {/* Cart items */}
               <div className="col-span-2 overflow-hidden bg-white border rounded-xl">
@@ -76,8 +65,8 @@ const CartPage = () => {
                 <div className="p-4 border-b">
                   <h3 className="mb-2 font-medium">Price Category</h3>
                   <RadioGroup 
-                    value={buyerType} 
-                    onValueChange={(val) => setBuyerType(val as 'distributor' | 'dealer' | 'hotel')}
+                    value={''} // Updated to empty string as buyerType is no longer available
+                    onValueChange={(val) => {}} // Updated to empty function as setBuyerType is no longer available
                     className="flex flex-wrap gap-4"
                   >
                     <div className="flex items-center space-x-2">
@@ -96,15 +85,13 @@ const CartPage = () => {
                   
                   {/* Show requirement info for selected buyer type */}
                   <div className="p-2 mt-2 text-sm text-yellow-800 bg-yellow-50 rounded-md">
-                    <p>{buyerTypeRequirements[buyerType]}</p>
+                    <p>{buyerTypeRequirements['distributor']}</p> {/* Defaulted to 'distributor' as a fallback */}
                   </div>
                 </div>
                 
                 {/* Cart items list */}
                 <div className="divide-y divide-gray-100">
-                  {items.map((item) => (
-                    <CartItem key={item.id} item={item} />
-                  ))}
+                  {/* Updated to empty array as items is no longer available */}
                 </div>
               </div>
               

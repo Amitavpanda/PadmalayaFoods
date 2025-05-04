@@ -22,7 +22,7 @@ import {
   SidebarTrigger
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '../../context/AuthContext';
+
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
@@ -30,7 +30,6 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { logout } = useAuth();
 
   const menuItems = [
     { 
@@ -56,7 +55,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   ];
 
   const handleLogout = () => {
-    logout();
     router.push('/');
   };
 

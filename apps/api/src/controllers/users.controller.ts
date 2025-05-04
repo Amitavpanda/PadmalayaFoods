@@ -54,29 +54,24 @@ export async function logOutHandler(req:Request, res : Response) {
 
 }
 
-export async function otpVerificationHandler(req:Request, res : Response) {
-
+export async function otpVerificationHandler(req: Request, res: Response) {
     info("req body inside otpVerificationHandler", req);
     const response = await otpVerificationService(req);
-    const {success, accessToken, refreshToken} = response;
+    const { success, accessToken, refreshToken } = response;
     console.log("accesstoken", accessToken);
-    if(success == "intermediate"){
-        res.cookie("secretToken1", accessToken, {
-            httpOnly : true,
-            secure : process.env.NODE_ENV === "production",
-            maxAge : 15 * 60 * 1000
-        })
-        res.cookie("secretToken2", refreshToken, {
-            httpOnly : true,
-            secure : process.env.NODE_ENV === "production",
-            maxAge : 7 * 24 * 60 * 60 * 1000 
-        })
 
+
+    const isProduction = process.env.NODE_ENV === "production";
+
+    if (success === "intermediate") {
         return res.send({
             success: true,
             message: "You are logged in successfully",
-        });
+            accessToken,      
+            refreshToken     
+          });
     }
     return res.send(response);
-
 }
+
+

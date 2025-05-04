@@ -1,6 +1,7 @@
+"use client"  
+
 import React, { useState } from 'react';
 import axios from 'axios';
-axios.defaults.withCredentials = true;
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,9 @@ import { Loader2 } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useAuth } from '../../context/AuthContext'; // Adjust the import path as necessary
 import { useRouter, usePathname } from 'next/navigation'; // Updated import
-export const Auth = () => {
+import CryptoJS from 'crypto-js';
+
+const Auth = () => {
   const { setIsAuthenticated } = useAuth();
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [otp, setOtp] = useState<string>('');
@@ -23,7 +26,7 @@ export const Auth = () => {
 
     if (phone && phone.length >= 10 && name) { // Ensure name is provided
       try {
-        const response = await axios.post('http://localhost:4000/register', { phoneNumber: phone, name });
+        const response = await axios.post('http://0.0.0.0:4000/register', { phoneNumber: phone, name });
         if (response.data.success) {
           setFullHash(response.data.hash); // Store fullHash for OTP verification
           setStep('otp');
@@ -45,7 +48,7 @@ export const Auth = () => {
     if (otp && otp.length === 6) {
       setIsLoading(true);
       try {
-        const response = await axios.post('http://localhost:4000/otpVerification', {
+        const response = await axios.post('http://0.0.0.0:4000/otpVerification', {
           phoneNumber: phone,
           otp,
           fullHash,
@@ -53,8 +56,15 @@ export const Auth = () => {
           withCredentials: true, // Ensure cookies are sent and received
         });
 
-        if (response.data.success) {
-          console.log('OTP verified successfully');
+        if (response.data.success && response.data.accessToken && response.data.refreshToken) {
+          console.log("accessToken", response.data.accessToken);
+          console.log("refreshToken", response.data.refreshToken);
+
+          // Store tokens directly without encryption
+          localStorage.setItem('secretToken1', response.data.accessToken);
+          localStorage.setItem('secretToken2', response.data.refreshToken);
+
+          setIsAuthenticated(true); // if you track auth context
           router.push('/'); // Redirect to home page
         } else {
           console.error('OTP verification failed:', response.data.message);
@@ -181,3 +191,4 @@ export const Auth = () => {
     </div>
   );
 };
+export default Auth;

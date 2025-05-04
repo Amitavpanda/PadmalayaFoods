@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from "sonner";
@@ -8,7 +7,6 @@ export const AdminAuth = () => {
     const [phone, setPhone] = useState('');
     const [otp, setOtp] = useState('');
     const [otpSent, setOtpSent] = useState(false);
-    const { setPhone: setAuthPhone, loginWithOtp, isLoading } = useAuth();
 
     const handleSendOtp = () => {
         if (!phone || phone.length < 10) {
@@ -16,7 +14,6 @@ export const AdminAuth = () => {
             return;
         }
 
-        setAuthPhone(phone);
         setOtpSent(true);
 
         toast.success("OTP sent successfully! Use 123456 for demo purposes.");
@@ -28,7 +25,8 @@ export const AdminAuth = () => {
             return;
         }
 
-        const success = await loginWithOtp(otp);
+        // Simulate OTP verification
+        const success = otp === '123456';
 
         if (!success) {
             toast.error("Invalid OTP. Please try again.");
@@ -65,9 +63,9 @@ export const AdminAuth = () => {
                             <Button
                                 className="w-full"
                                 onClick={handleSendOtp}
-                                disabled={isLoading}
+                                disabled={false}
                             >
-                                {isLoading ? "Sending..." : "Send OTP"}
+                                Send OTP
                             </Button>
 
                             <div className="text-sm text-center text-gray-500">
@@ -94,9 +92,9 @@ export const AdminAuth = () => {
                             <Button
                                 className="w-full"
                                 onClick={handleLogin}
-                                disabled={isLoading}
+                                disabled={false}
                             >
-                                {isLoading ? "Verifying..." : "Login"}
+                                Login
                             </Button>
 
                             <Button

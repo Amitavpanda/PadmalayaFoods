@@ -1,16 +1,16 @@
 
-import { Prisma, PrismaClient, User } from "@repo/db/client";
+import { PrismaClient, User } from "@repo/db/client";
 import bcrypt from "bcrypt";
 import { error, info } from "@repo/logs/logs";
 import twilio from "twilio"
 import { OtpVerificationSchema, RegisterUserSchema, LoginUserSchema, ResendOtpSchema } from "@repo/validations/userSchema";
-const prisma = new PrismaClient();
 import crypto from "crypto"
 import jwt from "jsonwebtoken";
 // import { generateAccessToken, generateRefreshToken } from "../utils/index.js";
 
 
 
+const prisma = new PrismaClient();
 
 export async function resendOtpService(input: ResendOtpSchema) {
     console.log("inside resendOtpService");
@@ -252,6 +252,7 @@ export async function otpVerificationService(input: OtpVerificationSchema) {
         if (accessTokenSecret !== undefined) {
             try{
                 accessToken = jwt.sign({userId : phoneNumber}, accessTokenSecret, { expiresIn: '15m' });
+                console.log("accessToken after otp verification", accessToken);
             }
             catch(err : any){
                 console.log("err in generateAccessToken", err)
@@ -260,6 +261,7 @@ export async function otpVerificationService(input: OtpVerificationSchema) {
         if (refreshTokeSecret !== undefined) {
             try{
                 refreshToken = jwt.sign({userId : phoneNumber}, refreshTokeSecret, { expiresIn: '7d' });
+                console.log("refreshToken after otp verification", refreshToken);
             }
             catch(err : any){
                 console.log("err in generateRefreshToken", err)
@@ -272,6 +274,7 @@ export async function otpVerificationService(input: OtpVerificationSchema) {
             });
 
             if (!existingUser) {
+                info("before creating the user");
                 await prisma.user.create({
                     data: {
                         phoneNumber,

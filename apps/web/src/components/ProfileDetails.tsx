@@ -3,11 +3,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { User, MapPin, ShoppingBag, Heart, PhoneCall, LogOut } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
 import { AddressForm } from '@/components/AddressForm';
 
-export const ProfileDetails = () => {
-  const { user, logout } = useAuth();
+interface ProfileDetailsProps {
+  userDetails: {
+    name: string;
+    email: string;
+  };
+}
+
+export const ProfileDetails: React.FC<ProfileDetailsProps> = ({ userDetails }) => {
   const [addresses, setAddresses] = useState([
     { id: '1', label: 'Home', address: '123 Main Street, Apt 4, Cityville, State, 12345' }
   ]);
@@ -51,13 +56,12 @@ export const ProfileDetails = () => {
                 <User className="w-6 h-6 text-biryani-600" />
               </div>
               <div>
-                <CardTitle>{user?.name || 'User'}</CardTitle>
-                <p className="text-sm text-muted-foreground">{user?.phone}</p>
+                <CardTitle>{userDetails.name}</CardTitle>
+                <p className="text-sm text-muted-foreground">{userDetails.email}</p>
               </div>
             </div>
             <Button 
               variant="outline" 
-              onClick={logout}
               size="sm"
               className="text-red-500 hover:text-red-700 hover:bg-red-50"
             >

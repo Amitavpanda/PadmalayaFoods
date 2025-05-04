@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { CartProvider } from "../context/CartContext";
-import { AuthProvider } from "../context/AuthContext";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { AuthProvider } from '../context/AuthContext';
 
 export const metadata: Metadata = {
-  title: "Rice Delivery App",
+  title: "Padmalaya Foods",
   description: "Order rice and groceries with ease.",
 };
-
 
 export default function RootLayout({
   children,
@@ -19,13 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <CartProvider>
-          <TooltipProvider>
+        <TooltipProvider>
           <AuthProvider>
             {children}
           </AuthProvider>
-          </TooltipProvider>
-        </CartProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

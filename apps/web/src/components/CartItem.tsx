@@ -2,7 +2,6 @@ import React from 'react';
 import { MinusCircle, PlusCircle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useCart } from '../../context/CartContext';
 
 interface CartItemProps {
   item: {
@@ -19,23 +18,24 @@ interface CartItemProps {
 }
 
 export const CartItem = ({ item }: CartItemProps) => {
-  const { updateQuantity, removeItem, buyerType } = useCart();
   
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (!isNaN(value) && value >= 0) {
-      updateQuantity(item.id, value);
+      // updateQuantity(item.id, value);
     }
   };
   
-  const incrementQuantity = () => updateQuantity(item.id, item.quantity + 1);
+  const incrementQuantity = () => {
+    // updateQuantity(item.id, item.quantity + 1);
+  };
   const decrementQuantity = () => {
     if (item.quantity > 1) {
-      updateQuantity(item.id, item.quantity - 1);
+      // updateQuantity(item.id, item.quantity - 1);
     }
   };
   
-  const priceToShow = item.price[buyerType];
+  const priceToShow = item.price['distributor'];
   const totalPrice = priceToShow * item.quantity;
   
   const formattedPrice = new Intl.NumberFormat('en-IN', { 
@@ -100,7 +100,9 @@ export const CartItem = ({ item }: CartItemProps) => {
           variant="ghost"
           size="icon"
           className="text-red-500 hover:text-red-700 hover:bg-red-50"
-          onClick={() => removeItem(item.id)}
+          onClick={() => {
+            // removeItem(item.id);
+          }}
         >
           <Trash2 className="w-4 h-4" />
         </Button>
