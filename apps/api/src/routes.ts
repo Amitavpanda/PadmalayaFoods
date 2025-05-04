@@ -1,4 +1,5 @@
 import { Express, Request, Response } from "express";
+import cors from "cors";
 import validate from "./middleware/validateResource.js";
 import { registerUserSchema, loginUserSchema, otpVerificationSchema, resendOtpSchema } from "@repo/validations/userSchema";
 import { loginHandler, logOutHandler, otpVerificationHandler, registerHandler, resendOtpHandler } from "./controllers/users.controller.js";
@@ -16,7 +17,10 @@ import { clear } from "console";
 
 function routes(app: Express) {
     app.get('/healthcheck', (req: Request, res: Response) => res.sendStatus(200));
-
+    app.use(cors({
+        origin: 'http://localhost:3000', // Replace with your frontend's URL
+        credentials: true, // Allow cookies to be sent
+      }));
     app.use((req: Request, res: Response, next) => {
         console.log("CORS Headers:", res.getHeaders()); // Log headers for each route
         next();
@@ -28,7 +32,14 @@ function routes(app: Express) {
     app.post('/logout', logOutHandler);
     app.post('/resendOtp', validate(resendOtpSchema), resendOtpHandler);
     app.get('/profile', authenticateAccessToken, (req, res) => {
-        res.json({ message: 'User profile' });
+        res.json({
+            success: true,
+            user: {
+                id: '123',
+                name: 'John Doe',
+                email: 'john.doe@example.com',
+            },
+        });
     });
     app.post('/addCategory', authenticateAccessToken, validate(addCategorySchema), addCategoryHandler);
 
@@ -53,7 +64,7 @@ function routes(app: Express) {
     app.get('/getOrders', authenticateAccessToken, getOrdersHandler);
     
     
-    app.get('/getCategories', authenticateAccessToken, getCategoriesHandler);
+     app.get('/getCategories', authenticateAccessToken, getCategoriesHandler);
 
     app.get('/getProductsByCategoryId/:categoryId', authenticateAccessToken, getProductByCategoryHandler);
     app.post('/addTocart', validate(addToCartSchema),  authenticateAccessToken, addToCartHandler);

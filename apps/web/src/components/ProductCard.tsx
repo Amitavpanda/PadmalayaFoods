@@ -1,10 +1,8 @@
-
 import React, { useState } from 'react';
 import { Heart, PlusCircle, MinusCircle, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { useCart } from '../../context/CartContext';
 import {
   Tooltip,
   TooltipContent,
@@ -31,64 +29,54 @@ interface ProductCardProps {
 export const ProductCard = ({ product, className }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
-  const { addItem, buyerType } = useCart();
-  
+  const [buyerType, setBuyerType] = useState<'distributor' | 'dealer' | 'hotel'>('distributor'); // Added buyerType state
+
+  const handleAddToCart = () => {
+    console.log(`Added ${quantity} of ${product.name} to cart as ${buyerType}`); // Mock implementation
+  };
+
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (!isNaN(value) && value >= 1) {
       setQuantity(value);
     }
   };
-  
+
   const incrementQuantity = () => setQuantity(prev => prev + 1);
   const decrementQuantity = () => {
     if (quantity > 1) {
       setQuantity(prev => prev - 1);
     }
   };
-  
-  const handleAddToCart = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
-      quantity
-    });
-  };
-  
+
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsFavorite(!isFavorite);
   };
-  
-  // Get prices for different buyer types
+
   const distributorPrice = product.price.distributor;
   const dealerPrice = product.price.dealer;
   const hotelPrice = product.price.hotel;
-  
-  // Current selected price based on buyer type
-  const priceToShow = product.price[buyerType];
-  
-  // Format prices
+
+  const priceToShow = product.price[buyerType]; // Fixed buyerType usage
+
   const formatPrice = (price: number) => new Intl.NumberFormat('en-IN', { 
     style: 'currency', 
     currency: 'INR',
     maximumFractionDigits: 0
   }).format(price);
-  
+
   const formattedDistributorPrice = formatPrice(distributorPrice);
   const formattedDealerPrice = formatPrice(dealerPrice);
   const formattedHotelPrice = formatPrice(hotelPrice);
   const formattedCurrentPrice = formatPrice(priceToShow);
-  
-  // Buyer type requirements
+
   const buyerTypeRequirements = {
     distributor: '5000+ packets',
     dealer: '1000+ packets',
     hotel: '100+ packets'
   };
-  
+
   return (
     <div className={cn(
       "bg-white rounded-xl overflow-hidden product-card-shadow transition-all hover:shadow-md",

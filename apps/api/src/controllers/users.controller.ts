@@ -54,29 +54,38 @@ export async function logOutHandler(req:Request, res : Response) {
 
 }
 
-export async function otpVerificationHandler(req:Request, res : Response) {
-
+export async function otpVerificationHandler(req: Request, res: Response) {
     info("req body inside otpVerificationHandler", req);
     const response = await otpVerificationService(req);
-    const {success, accessToken, refreshToken} = response;
+    const { success, accessToken, refreshToken } = response;
     console.log("accesstoken", accessToken);
-    if(success == "intermediate"){
-        res.cookie("secretToken1", accessToken, {
-            httpOnly : true,
-            secure : process.env.NODE_ENV === "production",
-            maxAge : 15 * 60 * 1000
-        })
-        res.cookie("secretToken2", refreshToken, {
-            httpOnly : true,
-            secure : process.env.NODE_ENV === "production",
-            maxAge : 7 * 24 * 60 * 60 * 1000 
-        })
 
+
+    const isProduction = process.env.NODE_ENV === "production";
+
+    if (success === "intermediate") {
+        res.cookie("secretToken1", accessToken, {
+            httpOnly: true,
+            secure: isProduction, // ✅ true in production, false in dev
+            sameSite: isProduction ? "none" : "lax", // ✅ Adjust based on environment
+            maxAge: 15 * 60 * 1000,
+        });
+
+        console.log("secretToken1 cookie set");
+
+        res.cookie("secretToken2", refreshToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+        console.log("secretToken2 cookie set");
         return res.send({
             success: true,
             message: "You are logged in successfully",
         });
     }
     return res.send(response);
-
 }
+
+
