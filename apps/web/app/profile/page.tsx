@@ -26,7 +26,8 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = Cookies.get('secretToken1'); // Retrieve the token from cookies
+        const token = typeof window !== 'undefined' ? localStorage.getItem('secretToken1') : null;
+        const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('secretToken2') : null;
         if (!token) {
           console.warn('Token not found in cookies, redirecting to authentication');
           redirectAfterAuth('/profile'); // Redirect to auth page with return path
@@ -35,8 +36,10 @@ const ProfilePage = () => {
         
         console.log('Sending cookies for authentication');
 
-        const response = await axios.get('http://0.0.0.0:4000/profile', {
-          withCredentials: true, // Ensure cookies are sent
+        const response = await axios.get('http://localhost:4000/profile', {
+          headers: {
+            Authorization: `Bearer ${token} ${refreshToken}`,
+          }
         });
 
         setUser(response.data.user);

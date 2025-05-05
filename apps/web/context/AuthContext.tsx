@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log('User is authenticated, redirecting to:', redirectPath);
       const pathToRedirect = redirectPath; // Store the path temporarily
       setRedirectPath(null); // Clear the redirect path immediately
-      router.push(pathToRedirect); // Redirect to the stored path
+      router.push(pathToRedirect); // Redirect to the stored pathRedirect to the stored path
     }
   }, [isAuthenticated, redirectPath, router]);
 

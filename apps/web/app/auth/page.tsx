@@ -10,7 +10,9 @@ import { Loader2 } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useAuth } from '../../context/AuthContext'; // Adjust the import path as necessary
 import { useRouter, usePathname } from 'next/navigation'; // Updated import
- const Auth = () => {
+import CryptoJS from 'crypto-js';
+
+const Auth = () => {
   const { setIsAuthenticated } = useAuth();
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [otp, setOtp] = useState<string>('');
@@ -54,9 +56,16 @@ import { useRouter, usePathname } from 'next/navigation'; // Updated import
           withCredentials: true, // Ensure cookies are sent and received
         });
 
-        if (response.data.success) {
-          console.log('OTP verified successfully');
-          console.log('Cookies after OTP verification:', document.cookie); // Log cookies to verify storage
+        if (response.data.success && response.data.accessToken && response.data.refreshToken) {
+          console.log("accessToken", response.data.accessToken);
+          console.log("refreshToken", response.data.refreshToken);
+
+          // Store tokens directly without encryption
+          localStorage.setItem('secretToken1', response.data.accessToken);
+          localStorage.setItem('secretToken2', response.data.refreshToken);
+
+          setIsAuthenticated(true); // if you track auth context
+          router.push('/'); // Redirect to home page
         } else {
           console.error('OTP verification failed:', response.data.message);
         }
